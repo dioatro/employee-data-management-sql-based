@@ -7,7 +7,7 @@ mydb=sql.connect(host="localhost",user="root",password="project",database="Emplo
 
 def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pending] 
     print("Welcome to Employee Data Management software\n")
-    print(" 1.Add Employee Data\n","2.Remove Employee Data \n","3.Configure Employee Data \n","4.Veiw Data \n")
+    print(" 1.Add Employee Data\n","2.Remove Employee Data \n","3.Configure Employee Data \n","4.Veiw Data \n","5.Exit \n")
     choice = int(input("Select a option(0 to abort, 1-5): "))
     if choice == 1:
         add_data()
@@ -17,6 +17,10 @@ def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pending]
         config_data()
     elif choice == 4:
         view_data()
+    elif choice == 5:
+        mydb.close()
+        print("Exiting... \n See You Next Time!")
+        
 
 
 def add_data(): # data=[empno,name,gender,age,role,dept,salary]
@@ -33,7 +37,6 @@ def add_data(): # data=[empno,name,gender,age,role,dept,salary]
         mydb.commit()
         ch=input("wanna enter more employee's data? (Y/N): ")
         if ch.upper() == 'N': #just trying to be effecient ;)
-            mydb.close()
             menu()
 
 def remove_data():
@@ -48,7 +51,45 @@ def remove_data():
         print("Employee removed successfully!")
         menu()
 
-#def config_data():
+def config_data(): #limited feilds to reduce lines of code and time
+    upg_emp=int(input("Enter Employee No. to be configured: "))
+    upg_item=input("Feilds that can be updated:\n","Age (A)\n","Role (R)\n","Department (D)\n","Salary (S)\n","Enter the Feild: ") 
+    obj_cursor = mydb.cursor()
+    if upg_item.upper() == 'A':
+        age=int(input("Enter the Age: "))
+        obj_cursor.execute("update employee set Age={0} where Emp_no = {1}".format(age,upg_emp))
+        mydb.commit()
+
+    elif upg_item.upper() == 'R':
+        role=input("Enter the role: ")
+        obj_cursor.execute("update employee set Role='{0}' where Emp_no = {1}".format(role,upg_emp))
+        mydb.commit()
+
+    elif upg_item.upper() == 'D':
+        dept=input("Enter the Department: ")
+        obj_cursor.execute("update employee set Dept='{0}' where Emp_no = {1}".format(dept,upg_emp))
+        mydb.commit()
+
+    elif upg_item.upper() == 'S':
+        salary=input("Enter the Salary: ")
+        obj_cursor.execute("update employee set Salary={0} where Emp_no = {1}".format(salary,upg_emp))
+        mydb.commit()
+
+    else:
+        print("Feild Not Found!")
+        menu()
+        
+
+def view_data(): #making it simplier 
+    choice = input("Do want view the whole table(T) or single row(R)?: ")
+    if choice.upper() == 'T':
+        obj_cursor=mydb.cursor()
+        obj_cursor.execute("select * from employee")
+    elif choice.upper() == "R":
+        emp_no=int(input("Enter Employee No.: "))
+        obj_cursor=mydb.cursor()
+        obj_cursor.execute("select * from employee where Emp_no = {0}".format(emp_no))
+        
     
 
 menu()
