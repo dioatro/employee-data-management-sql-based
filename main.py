@@ -1,5 +1,4 @@
 import mysql.connector as sql 
-import os #to run 'setup-sql.sh' 
 
 #conection body
 mydb=sql.connect(host="localhost",user="root",password="project",database="Employee_Data_Management")
@@ -55,42 +54,59 @@ def remove_data():
 
 def config_data(): #limited feilds to reduce lines of code and time
     upg_emp=int(input("Enter Employee No. to be configured: "))
-    upg_item=input("Feilds that can be updated:\n","Age (A)\n","Role (R)\n","Department (D)\n","Salary (S)\n","Enter the Feild: ") 
+    upg_item=input("Fields that can be updated:\n Age (A)\n Role (R)\n Department (D)\n Salary (S)\n Enter the Field: ") 
     obj_cursor = mydb.cursor()
     if upg_item.upper() == 'A':
         age=int(input("Enter the Age: "))
         obj_cursor.execute("update employee set Age={0} where Emp_no = {1}".format(age,upg_emp))
         mydb.commit()
+        menu()
 
     elif upg_item.upper() == 'R':
         role=input("Enter the role: ")
         obj_cursor.execute("update employee set Role='{0}' where Emp_no = {1}".format(role,upg_emp))
         mydb.commit()
+        menu()
 
     elif upg_item.upper() == 'D':
         dept=input("Enter the Department: ")
         obj_cursor.execute("update employee set Dept='{0}' where Emp_no = {1}".format(dept,upg_emp))
         mydb.commit()
+        menu()
 
     elif upg_item.upper() == 'S':
         salary=input("Enter the Salary: ")
         obj_cursor.execute("update employee set Salary={0} where Emp_no = {1}".format(salary,upg_emp))
         mydb.commit()
+        menu()
 
     else:
         print("Feild Not Found!")
         menu()
         
 
-def view_data(): #making it simplier 
+def view_data(): #making it simple
     choice = input("Do want view the whole table(T) or single row(R)?: ")
     if choice.upper() == 'T':
         obj_cursor=mydb.cursor()
         obj_cursor.execute("select * from employee")
+        display = obj_cursor.fetchall()
+        for row in display:
+            print(row)
+        menu()
     elif choice.upper() == "R":
         emp_no=int(input("Enter Employee No.: "))
         obj_cursor=mydb.cursor()
         obj_cursor.execute("select * from employee where Emp_no = {0}".format(emp_no))
-
+        display = obj_cursor.fetchone()
+        if display: # checks if found
+            print(display)
+            menu()
+        else:
+            print("Employee not found!")
+            menu()
+    else:
+        print("Wrong Input!")
+        menu()
 
 menu()
