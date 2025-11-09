@@ -5,7 +5,7 @@ import os #to run 'setup-sql.sh'
 mydb=sql.connect(host="localhost",user="root",password="project",database="Employee_Data_Management")
 
 
-def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pendin] 
+def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pending] 
     print("Welcome to Employee Data Management software\n")
     print(" 1.Add Employee Data\n","2.Remove Employee Data \n","3.Configure Employee Data \n","4.Veiw Data \n")
     choice = int(input("Select a option(0 to abort, 1-5): "))
@@ -38,4 +38,14 @@ def remove_data():
     del_emp=int(input("Enter Employee No. to be removed: "))
     try: #checking if that emp no. exists or not 
         obj_cursor=mydb.cursor()
-        obj_cursor.excute("")
+        obj_cursor.excute("delete from employee where Emp_no = "{del_emp}"")
+    except:
+        print("Employee No. Not Found!")
+
+def config_data():
+    conf_emp=int(input("Enter the Employee No. to be configured: "))
+    try: #checking if that emp no. exists or not 
+        obj_cursor=mydb.cursor()
+        obj_cursor.excute("update")
+    except:
+        print("Employee No. Not Found!")
