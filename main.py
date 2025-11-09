@@ -40,7 +40,7 @@ def add_data(): # data=[empno,name,gender,age,role,dept,salary]
         if ch.upper() == 'N': #just trying to be effecient ;)
             menu()
 
-def remove_data():
+def remove_data(): #single employee at a time
     del_emp=int(input("Enter Employee No. to be removed: "))
     obj_cursor = mydb.cursor()
     obj_cursor.execute("DELETE FROM employee WHERE Emp_no = {0}".format(del_emp))
