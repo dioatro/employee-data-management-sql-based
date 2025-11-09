@@ -5,7 +5,7 @@ import os #to run 'setup-sql.sh'
 mydb=sql.connect(host="localhost",user="root",password="project",database="Employee_Data_Management")
 
 
-def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pending] 
+def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pending] 5[pending]
     print("Welcome to Employee Data Management software\n")
     print(" 1.Add Employee Data\n","2.Remove Employee Data \n","3.Configure Employee Data \n","4.Veiw Data \n","5.Exit \n")
     choice = int(input("Select a option(0 to abort, 1-5): "))
@@ -20,7 +20,9 @@ def menu(): #status - 1[completed] 2[pending] 3[pending] 4[pending]
     elif choice == 5:
         mydb.close()
         print("Exiting... \n See You Next Time!")
-        
+    else:
+        print("Wrong Input!")
+        menu()
 
 
 def add_data(): # data=[empno,name,gender,age,role,dept,salary]
@@ -89,7 +91,6 @@ def view_data(): #making it simplier
         emp_no=int(input("Enter Employee No.: "))
         obj_cursor=mydb.cursor()
         obj_cursor.execute("select * from employee where Emp_no = {0}".format(emp_no))
-        
-    
+
 
 menu()
