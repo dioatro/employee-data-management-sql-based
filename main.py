@@ -17,7 +17,7 @@ def menu(): #status - 1[completed] 2[completed] 3[completed] 4[completed] 5[comp
     elif choice == 4:
         view_data()
     elif choice == 5:
-        mydb.close()
+        obj_cursor.close()
         print("Exiting... \n See You Next Time!")
     else:
         print("Wrong Input!")
@@ -110,3 +110,6 @@ def view_data(): #making it simple
         menu()
 
 menu()
+
+#A school project
+#By Ak,Praveen,Dharun,Kevin
