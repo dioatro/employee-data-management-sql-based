@@ -6,7 +6,7 @@ mydb=sql.connect(host="localhost",user="root",password="",database="Employee_Dat
 
 def menu(): #status - 1[completed] 2[completed] 3[completed] 4[completed] 5[completed]
     print("Welcome to Employee Data Management software\n")
-    print(" 1.Add Employee Data\n","2.Remove Employee Data \n","3.Configure Employee Data \n","4.Veiw Data \n","5.Exit \n")
+    print(" 1.Add Employee Data\n","2.Remove Employee Data \n","3.Configure Employee Data \n","4.View Data \n","5.Exit \n")
     choice = int(input("Select a option(0 to abort, 1-5): "))
     if choice == 1:
         add_data()
