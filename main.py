@@ -1,7 +1,7 @@
 import mysql.connector as sql 
 
 #conection body
-mydb=sql.connect(host="localhost",user="root",password="",database="Employee_Data_Management")
+mydb=sql.connect(host="localhost",user="root",password="project",database="Employee_Data_Management")
 
 
 def menu(): #status - 1[completed] 2[completed] 3[completed] 4[completed] 5[completed]
@@ -38,6 +38,7 @@ def add_data(): # data=[empno,name,gender,age,role,dept,salary]
         mydb.commit()
         ch=input("wanna enter more employee's data? (Y/N): ")
         if ch.upper() == 'N': #just trying to be effecient ;)
+            obj_cursor.close()
             menu()
 
 def remove_data(): #single employee at a time
@@ -47,9 +48,11 @@ def remove_data(): #single employee at a time
     mydb.commit()
     if obj_cursor.rowcount == 0:
         print("Employee No. not found!")
+        obj_cursor.close()
         menu()
     else:
         print("Employee removed successfully!")
+        obj_cursor.close()
         menu()
 
 def config_data(): #limited feilds to reduce lines of code and time
@@ -60,24 +63,28 @@ def config_data(): #limited feilds to reduce lines of code and time
         age=int(input("Enter the Age: "))
         obj_cursor.execute("update employee set Age={0} where Emp_no = {1}".format(age,upg_emp))
         mydb.commit()
+        obj_cursor.close()
         menu()
 
     elif upg_item.upper() == 'R':
         role=input("Enter the role: ")
         obj_cursor.execute("update employee set Role='{0}' where Emp_no = {1}".format(role,upg_emp))
         mydb.commit()
+        obj_cursor.close()
         menu()
 
     elif upg_item.upper() == 'D':
         dept=input("Enter the Department: ")
         obj_cursor.execute("update employee set Dept='{0}' where Emp_no = {1}".format(dept,upg_emp))
         mydb.commit()
+        obj_cursor.close()
         menu()
 
     elif upg_item.upper() == 'S':
         salary=input("Enter the Salary: ")
         obj_cursor.execute("update employee set Salary={0} where Emp_no = {1}".format(salary,upg_emp))
         mydb.commit()
+        obj_cursor.close()
         menu()
 
     else:
@@ -93,6 +100,7 @@ def view_data(): #making it simple
         display = obj_cursor.fetchall()
         for row in display:
             print(row)
+        obj_cursor.close()
         menu()
     elif choice.upper() == "R":
         emp_no=int(input("Enter Employee No.: "))
@@ -101,15 +109,15 @@ def view_data(): #making it simple
         display = obj_cursor.fetchone()
         if display: # checks if found
             print(display)
+            obj_cursor.close()
             menu()
         else:
             print("Employee not found!")
+            obj_cursor.close()
             menu()
     else:
         print("Wrong Input!")
+        obj_cursor.close()
         menu()
 
 menu()
-
-#A school project
-#By Ak,Praveen,Dharun,Kevin
