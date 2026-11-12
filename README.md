@@ -46,11 +46,12 @@ employee-data-management-sql-based/
 │   ├── models.py           # Pydantic data schemas & validation
 │   ├── crud.py             # Parameterized SQL business logic
 │   ├── main.py             # FastAPI REST API routes & static file server
-│   ├── static/             # Frontend assets
-│   │   ├── css/dashboard.css
-│   │   └── js/dashboard.js
+│   ├── static/             # Frontend assets (CSS & JS)
 │   └── templates/
 │       └── index.html      # Responsive executive web interface
+├── legacy/                 # Preserved original school project code
+│   ├── original_main.py    # Untouched original CLI script
+│   └── original_README.md  # Original database notes
 ├── scripts/
 │   ├── schema.sql          # MySQL database schema DDL
 │   ├── sample_data.sql     # Enterprise seed data (20 employees)
@@ -60,6 +61,10 @@ employee-data-management-sql-based/
 ├── requirements.txt        # Python package dependencies
 └── .env.example            # Environment configuration template
 ```
+
+> 💡 **Original Code Branches**: The original school project files are also preserved on their own pristine Git branches:
+> - **[`legacy` branch](https://github.com/dioatro/employee-data-management-sql-based/tree/legacy)**
+> - **[`original` branch](https://github.com/dioatro/employee-data-management-sql-based/tree/original)**
 
 ---
 
