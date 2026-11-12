@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Data Management — Enterprise Dashboard</title>
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ===================================================================== -->
+  <!-- 1. LOGIN PORTAL VIEW                                                  -->
+  <!-- ===================================================================== -->
+  <div id="login-view" class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-badge">SQL ENTERPRISE</div>
+        <h2>Sign In to Portal</h2>
+        <p class="login-subtitle">Employee Data Management &amp; Payroll Intelligence System</p>
+      </div>
+
+      <!-- Quick Fill Credentials Box -->
+      <div class="credential-hint-box">
+        <div class="hint-title">Authorized Credentials:</div>
+        <div class="hint-chips">
+          <button type="button" class="btn-chip" data-user="2026BTCS022" data-pass="passwordispassword">
+            <span>👤 2026BTCS022</span>
+            <small class="chip-role">Admin</small>
+          </button>
+          <button type="button" class="btn-chip" data-user="2026BCAI020" data-pass="passwordispassword">
+            <span>👤 2026BCAI020</span>
+            <small class="chip-role">Operations</small>
+          </button>
+        </div>
+      </div>
+
+      <form id="form-login">
+        <div id="login-error-alert" class="alert alert-danger" style="display: none;"></div>
+
+        <div class="form-group mb-3">
+          <label for="login-username">Username / ID</label>
+          <div class="input-icon-wrapper">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <input type="text" id="login-username" required placeholder="Enter username (e.g. 2026BTCS022)" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="login-password">Password</label>
+          <div class="input-icon-wrapper">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input type="password" id="login-password" required placeholder="Enter password" autocomplete="current-password">
+            <button type="button" id="btn-toggle-password" class="btn-input-action" title="Toggle password visibility">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="btn-submit-login">
+          Sign In
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <span>Protected enterprise access &bull; End-to-end audit enabled</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 2. MAIN APPLICATION DASHBOARD (AUTHENTICATED)                         -->
+  <!-- ===================================================================== -->
+  <div id="app-view" class="app-layout" style="display: none;">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="brand-badge">SQL</div>
+        <div class="brand-title">
+          <h1>Employee Data Management</h1>
+          <span class="subtitle">Enterprise Administration &amp; Payroll Intelligence</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <!-- DB Status Pill -->
+        <div class="db-pill" id="db-status-pill">
+          <span class="status-dot"></span>
+          <span id="db-backend-label">Connecting...</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <button class="btn btn-secondary" id="btn-export-csv" title="Export current dataset to CSV">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export CSV
+        </button>
+        <button class="btn btn-secondary" id="btn-open-lookup">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Lookup by ID
+        </button>
+        <button class="btn btn-primary" id="btn-open-add">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add Employee
+        </button>
+
+        <!-- Divider -->
+        <div class="header-divider"></div>
+
+        <!-- User Profile Pill Button -->
+        <button class="user-profile-button" id="btn-open-profile" title="View Profile">
+          <span class="user-avatar" id="header-user-avatar">U</span>
+          <div class="user-info-text">
+            <span class="user-username" id="header-user-name">User</span>
+            <span class="user-role-badge" id="header-user-badge">ROLE</span>
+          </div>
+        </button>
+
+        <!-- Logout Button -->
+        <button class="btn btn-secondary btn-icon" id="btn-logout" title="Sign Out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <!-- Executive KPI Cards -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-meta">
+            <span class="kpi-label">Total Headcount</span>
+            <span class="kpi-icon">👥</span>
+          </div>
+          <div class="kpi-value" id="kpi-headcount">-</div>
+          <div class="kpi-footnote">Active personnel across all departments</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-meta">
+            <span class="kpi-label">Annual Payroll</span>
+            <span class="kpi-icon">💳</span>
+          </div>
+          <div class="kpi-value" id="kpi-payroll">-</div>
+          <div class="kpi-footnote">Cumulative compensation commitments</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-meta">
+            <span class="kpi-label">Average Compensation</span>
+            <span class="kpi-icon">📈</span>
+          </div>
+          <div class="kpi-value" id="kpi-avg-salary">-</div>
+          <div class="kpi-footnote">Mean workforce compensation</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-meta">
+            <span class="kpi-label">Operating Departments</span>
+            <span class="kpi-icon">🏢</span>
+          </div>
+          <div class="kpi-value" id="kpi-depts">-</div>
+          <div class="kpi-footnote">Distinct organizational units</div>
+        </div>
+      </section>
+
+      <!-- Department Distribution & Demographics Panel -->
+      <section class="insights-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Department Breakdown &amp; Salary Distribution</h3>
+            <span class="panel-badge">Analytics</span>
+          </div>
+          <div class="panel-body" id="department-breakdown-list">
+            <div class="skeleton-text">Loading department breakdown...</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Workforce Tiers &amp; Demographics</h3>
+            <span class="panel-badge">Overview</span>
+          </div>
+          <div class="panel-body">
+            <div class="demographic-row">
+              <h4>Gender Representation</h4>
+              <div class="demographic-pills" id="gender-distribution-pills"></div>
+            </div>
+            <div class="demographic-row" style="margin-top: 1.25rem;">
+              <h4>Compensation Tiers</h4>
+              <div class="demographic-pills" id="salary-tier-pills"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter & Search Toolbar -->
+      <section class="toolbar-section">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="filter-search" placeholder="Search by name, role, or ID..." autocomplete="off">
+          </div>
+          <div class="select-group">
+            <label for="filter-dept">Department:</label>
+            <select id="filter-dept">
+              <option value="ALL">All Departments</option>
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="filter-gender">Gender:</label>
+            <select id="filter-gender">
+              <option value="ALL">All Genders</option>
+              <option value="M">Male (M)</option>
+              <option value="F">Female (F)</option>
+              <option value="O">Other (O)</option>
+            </select>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-ghost" id="btn-reset-filters">Reset Filters</button>
+          <div class="page-size-selector">
+            <label for="page-size-select">Show:</label>
+            <select id="page-size-select">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Employee Roster Table -->
+      <section class="table-section">
+        <div class="table-container">
+          <table class="data-table" id="employee-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="Emp_no">Emp ID <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="Name">Name <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="Gender">Gender <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="Age">Age <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="Role">Role <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="Dept">Department <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="Salary">Salary (USD) <span class="sort-indicator"></span></th>
+                <th class="actions-header">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="employee-table-body">
+              <tr>
+                <td colspan="8" class="text-center py-4">Loading employee roster...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-footer">
+          <div class="record-count" id="record-summary-text">Showing 0-0 of 0 employees</div>
+          <div class="pagination-buttons">
+            <button class="btn btn-secondary btn-sm" id="btn-prev-page" disabled>Previous</button>
+            <span class="page-indicator" id="page-indicator-text">Page 1 of 1</span>
+            <button class="btn btn-secondary btn-sm" id="btn-next-page" disabled>Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODALS                                                                -->
+  <!-- ===================================================================== -->
+
+  <!-- MODAL: User Profile -->
+  <div class="modal-backdrop" id="modal-profile">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>User Profile &amp; Security Clearance</h3>
+        <button class="btn-close" data-close="modal-profile">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="profile-card">
+          <div class="profile-header">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <div class="user-avatar-large" id="profile-avatar">U</div>
+              <div>
+                <h4 style="font-size: 1.15rem; font-weight: 700;" id="profile-fullname">User Full Name</h4>
+                <span class="text-muted text-sm" id="profile-role-title">Role Title</span>
+              </div>
+            </div>
+            <span class="user-role-badge" id="profile-badge">BADGE</span>
+          </div>
+          <div class="profile-details-grid">
+            <div>
+              <div class="profile-item-label">Username / ID</div>
+              <div class="profile-item-value" id="profile-username">2026BTCS022</div>
+            </div>
+            <div>
+              <div class="profile-item-label">Assigned Department</div>
+              <div class="profile-item-value" id="profile-dept">Engineering</div>
+            </div>
+            <div>
+              <div class="profile-item-label">Internal Email</div>
+              <div class="profile-item-value text-sm" id="profile-email">user@enterprise.internal</div>
+            </div>
+            <div>
+              <div class="profile-item-label">Session Status</div>
+              <div class="profile-item-value text-success">Active &bull; Authorized</div>
+            </div>
+          </div>
+          <div style="margin-top: 1.25rem;">
+            <div class="profile-item-label" style="margin-bottom: 0.4rem;">Granted System Permissions</div>
+            <div class="demographic-pills" id="profile-permissions-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btn-profile-logout">Sign Out</button>
+        <button type="button" class="btn btn-secondary" data-close="modal-profile">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add Employee -->
+  <div class="modal-backdrop" id="modal-add">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>Add New Employee</h3>
+        <button class="btn-close" data-close="modal-add">&times;</button>
+      </div>
+      <form id="form-add-employee">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="add-emp-no">Employee No. (Emp_no) *</label>
+              <input type="number" id="add-emp-no" required min="1" placeholder="e.g. 1021">
+            </div>
+            <div class="form-group">
+              <label for="add-name">Full Name *</label>
+              <input type="text" id="add-name" required placeholder="e.g. Jordan Lee">
+            </div>
+            <div class="form-group">
+              <label for="add-gender">Gender *</label>
+              <select id="add-gender" required>
+                <option value="M">Male (M)</option>
+                <option value="F">Female (F)</option>
+                <option value="O">Other (O)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-age">Age *</label>
+              <input type="number" id="add-age" required min="18" max="100" placeholder="18-100">
+            </div>
+            <div class="form-group">
+              <label for="add-role">Role / Job Title *</label>
+              <input type="text" id="add-role" required placeholder="e.g. Data Engineer">
+            </div>
+            <div class="form-group">
+              <label for="add-dept">Department *</label>
+              <input type="text" id="add-dept" required placeholder="e.g. Engineering">
+            </div>
+            <div class="form-group full-width">
+              <label for="add-salary">Annual Salary ($) *</label>
+              <input type="number" id="add-salary" required min="0" step="500" placeholder="e.g. 95000">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-add">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit / Configure Employee -->
+  <div class="modal-backdrop" id="modal-edit">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>Configure Employee Data</h3>
+        <button class="btn-close" data-close="modal-edit">&times;</button>
+      </div>
+      <form id="form-edit-employee">
+        <div class="modal-body">
+          <input type="hidden" id="edit-emp-no">
+          <div class="notice-box">
+            Updating record for Employee ID: <strong id="edit-emp-no-label">#</strong>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="edit-name">Full Name</label>
+              <input type="text" id="edit-name" required>
+            </div>
+            <div class="form-group">
+              <label for="edit-gender">Gender</label>
+              <select id="edit-gender">
+                <option value="M">Male (M)</option>
+                <option value="F">Female (F)</option>
+                <option value="O">Other (O)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit-age">Age</label>
+              <input type="number" id="edit-age" required min="18" max="100">
+            </div>
+            <div class="form-group">
+              <label for="edit-role">Role</label>
+              <input type="text" id="edit-role" required>
+            </div>
+            <div class="form-group">
+              <label for="edit-dept">Department</label>
+              <input type="text" id="edit-dept" required>
+            </div>
+            <div class="form-group">
+              <label for="edit-salary">Salary ($)</label>
+              <input type="number" id="edit-salary" required min="0" step="500">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-edit">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Single Employee Lookup / Profile View -->
+  <div class="modal-backdrop" id="modal-lookup">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>Employee Lookup</h3>
+        <button class="btn-close" data-close="modal-lookup">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="search-box mb-4">
+          <input type="number" id="lookup-emp-no-input" placeholder="Enter Employee ID (e.g. 1001)...">
+          <button class="btn btn-primary btn-sm" id="btn-perform-lookup">Search</button>
+        </div>
+        <div id="lookup-result-container" class="profile-card-container">
+          <div class="empty-state">Enter an ID above to view details.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close="modal-lookup">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Delete Confirmation -->
+  <div class="modal-backdrop" id="modal-delete">
+    <div class="modal-window modal-sm">
+      <div class="modal-header">
+        <h3 class="text-danger">Confirm Employee Removal</h3>
+        <button class="btn-close" data-close="modal-delete">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove employee <strong id="delete-emp-label">#</strong>?</p>
+        <p class="text-muted text-sm">This operation permanently deletes the record from the database.</p>
+        <input type="hidden" id="delete-emp-no">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close="modal-delete">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete">Remove Employee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
